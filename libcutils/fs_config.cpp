@@ -74,6 +74,7 @@ static const struct fs_path_config android_dirs[] = {
     { 00771, AID_SHARED_RELRO, AID_SHARED_RELRO, 0, "data/misc/shared_relro" },
     { 01771, AID_SYSTEM,       AID_MISC,         0, "data/misc" },
     { 00775, AID_MEDIA_RW,     AID_MEDIA_RW,     0, "data/media/Music" },
+ //   { 00771, AID_SYSTEM, AID_AMAZON_GROUP, 0, "data/securedStorageLocation" }, // fosmod_shared_storage
     { 00775, AID_MEDIA_RW,     AID_MEDIA_RW,     0, "data/media" },
     { 00750, AID_ROOT,         AID_SHELL,        0, "data/nativetest" },
     { 00750, AID_ROOT,         AID_SHELL,        0, "data/nativetest64" },
@@ -191,8 +192,8 @@ static const struct fs_path_config android_files[] = {
                                               "system/bin/run-as" },
 
     // Support FIFO scheduling mode in SurfaceFlinger.
-    { 00755, AID_SYSTEM,    AID_GRAPHICS,  CAP_MASK_LONG(CAP_SYS_NICE),
-                                              "system/bin/surfaceflinger" },
+//    { 00755, AID_SYSTEM,    AID_GRAPHICS,  CAP_MASK_LONG(CAP_SYS_NICE),
+//                                              "system/bin/surfaceflinger" },
     // generic defaults
     { 00755, AID_ROOT,      AID_ROOT,      0, "bin/*" },
     { 00640, AID_ROOT,      AID_SHELL,     0, "fstab.*" },

@@ -180,7 +180,7 @@ cc_library {
     local_include_dirs: ["include"],
 
     cflags: [
-        "-Werror",
+	"-Werror",
         "-Wall",
         "-Wextra",
     ],

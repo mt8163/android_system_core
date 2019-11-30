@@ -72,7 +72,7 @@ namespace init {
 namespace {
 
 selabel_handle* sehandle = nullptr;
-
+#if 0
 enum EnforcingStatus { SELINUX_PERMISSIVE, SELINUX_ENFORCING };
 
 EnforcingStatus StatusFromCmdline() {
@@ -87,10 +87,10 @@ EnforcingStatus StatusFromCmdline() {
 
     return status;
 }
-
+#endif
 bool IsEnforcing() {
     if (ALLOW_PERMISSIVE_SELINUX) {
-        return StatusFromCmdline() == SELINUX_ENFORCING;
+        return false;  //StatusFromCmdline() == SELINUX_ENFORCING;
     }
     return true;
 }

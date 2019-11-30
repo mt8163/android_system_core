@@ -661,11 +661,11 @@ status_t Thread::readyToRun()
 
 status_t Thread::run(const char* name, int32_t priority, size_t stack)
 {
-    if (name == nullptr) {
+/*    if (name == nullptr) {
         ALOGW("Thread name not provided to Thread::run");
         name = 0;
     }
-
+*/
     Mutex::Autolock _l(mLock);
 
     if (mRunning) {
