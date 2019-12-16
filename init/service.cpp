@@ -379,7 +379,6 @@ bool Service::Start() {
             return false;
         }
 #endif
-	}
         free(mycon);
         free(fcon);
         if (rc < 0) {
