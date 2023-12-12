@@ -1786,7 +1786,6 @@ void FlashAllTool::Flash() {
     }
 
     DetermineSlot();
-    CollectImages();
 
     CancelSnapshotIfNeeded();
 
@@ -1950,7 +1949,6 @@ static void do_update(const char* filename, FlashingPlan* fp) {
     }
     ZipImageSource zp = ZipImageSource(zip);
     fp->source = &zp;
-    fp->wants_wipe = false;
     FlashAllTool tool(fp);
     tool.Flash();
 
@@ -2565,14 +2563,12 @@ int FastBootTool::Main(int argc, char* argv[]) {
                     std::make_unique<ResizeTask>(fp.get(), partition, size, fp->slot_override);
             resize_task->Run();
         } else if (command == "gsi") {
-            std::string arg = next_arg(&args);
-            if (arg == "wipe") {
-                fb->RawCommand("gsi:wipe", "wiping GSI");
-            } else if (arg == "disable") {
-                fb->RawCommand("gsi:disable", "disabling GSI");
-            } else {
-                syntax_error("expected 'wipe' or 'disable'");
+            if (args.empty()) syntax_error("invalid gsi command");
+            std::string cmd("gsi");
+            while (!args.empty()) {
+                cmd += ":" + next_arg(&args);
             }
+            fb->RawCommand(cmd, "");
         } else if (command == "wipe-super") {
             std::string image;
             if (args.empty()) {
@@ -2603,10 +2599,13 @@ int FastBootTool::Main(int argc, char* argv[]) {
         if (fp->force_flash) {
             CancelSnapshotIfNeeded();
         }
+        std::vector<std::unique_ptr<Task>> wipe_tasks;
         std::vector<std::string> partitions = {"userdata", "cache", "metadata"};
         for (const auto& partition : partitions) {
-            tasks.emplace_back(std::make_unique<WipeTask>(fp.get(), partition));
+            wipe_tasks.emplace_back(std::make_unique<WipeTask>(fp.get(), partition));
         }
+        tasks.insert(tasks.begin(), std::make_move_iterator(wipe_tasks.begin()),
+                     std::make_move_iterator(wipe_tasks.end()));
     }
     if (fp->wants_set_active) {
         fb->SetActive(next_active);
