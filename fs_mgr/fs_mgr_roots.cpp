@@ -115,23 +115,14 @@ bool TryPathMount(FstabEntry* rec, const std::string& mount_pt) {
         return true;
     }
 
-    static const std::vector<std::string> supported_fs{"ext4", "squashfs", "vfat", "f2fs", "erofs",
-                                                       "none"};
+    static const std::vector<std::string> supported_fs{"ext4", "squashfs", "vfat", "exfat", "f2fs",
+                                                       "erofs", "none"};
     if (std::find(supported_fs.begin(), supported_fs.end(), rec->fs_type) == supported_fs.end()) {
         LERROR << "unknown fs_type \"" << rec->fs_type << "\" for " << mount_point;
         return false;
     }
 
     int result = fs_mgr_do_mount_one(*rec, mount_point);
-    if (result == -1 && rec->fs_mgr_flags.formattable) {
-        PERROR << "Failed to mount " << mount_point << "; formatting";
-        if (fs_mgr_do_format(*rec) != 0) {
-            PERROR << "Failed to format " << mount_point;
-            return false;
-        }
-        result = fs_mgr_do_mount_one(*rec, mount_point);
-    }
-
     if (result == -1) {
         PERROR << "Failed to mount " << mount_point;
         return false;
