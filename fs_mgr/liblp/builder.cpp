@@ -1043,8 +1043,8 @@ bool MetadataBuilder::UpdateBlockDeviceInfo(size_t index, const BlockDeviceInfo&
     CHECK(index < block_devices_.size());
 
     LpMetadataBlockDevice& block_device = block_devices_[index];
-    if (device_info.size != block_device.size) {
-        LERROR << "Device size does not match (got " << device_info.size << ", expected "
+    if (device_info.size < block_device.size) {
+        LERROR << "Device size does not fit (got " << device_info.size << ", expected "
                << block_device.size << ")";
         return false;
     }
@@ -1209,6 +1209,15 @@ void MetadataBuilder::SetAutoSlotSuffixing() {
 void MetadataBuilder::SetVirtualABDeviceFlag() {
     RequireExpandedMetadataHeader();
     header_.flags |= LP_HEADER_FLAG_VIRTUAL_AB_DEVICE;
+}
+
+void MetadataBuilder::SetOverlaysActiveFlag(bool flag) {
+    RequireExpandedMetadataHeader();
+    if (flag) {
+        header_.flags |= LP_HEADER_FLAG_OVERLAYS_ACTIVE;
+    } else {
+        header_.flags &= ~LP_HEADER_FLAG_OVERLAYS_ACTIVE;
+    }
 }
 
 bool MetadataBuilder::IsABDevice() {
